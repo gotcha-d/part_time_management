@@ -1,11 +1,160 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>top page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>パート勤務時間・給与計算</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-    <p>Hello, world</p>
-    <a href="#">入力ページへ</a>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen py-8 px-4">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">パート勤務時間・給与計算</h1>
+            <p class="text-gray-600">勤務の開始、終了時刻から勤務時間、給与計算時間、日給などパート給与計算を求めます。</p>
+        </div>
+
+        <!-- Main Calculator Form -->
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <form id="calcForm" class="space-y-6">
+                <!-- 勤務開始時刻 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">勤務開始時刻</label>
+                        <div class="flex items-center space-x-2">
+                            <input type="number" id="startHour" name="startHour" min="0" max="23" value="8"
+                                   class="input-field w-20 text-center" placeholder="時">
+                            <span class="text-gray-600 font-medium">時</span>
+                            <input type="number" id="startMinute" name="startMinute" min="0" max="59" value="20"
+                                   class="input-field w-20 text-center" placeholder="分">
+                            <span class="text-gray-600 font-medium">分</span>
+                        </div>
+                    </div>
+
+                    <!-- 勤務終了時刻 -->
+                    <div class="form-group">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">勤務終了時刻</label>
+                        <div class="flex items-center space-x-2">
+                            <input type="number" id="endHour" name="endHour" min="0" max="23" value="17"
+                                   class="input-field w-20 text-center" placeholder="時">
+                            <span class="text-gray-600 font-medium">時</span>
+                            <input type="number" id="endMinute" name="endMinute" min="0" max="59" value="10"
+                                   class="input-field w-20 text-center" placeholder="分">
+                            <span class="text-gray-600 font-medium">分</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 休憩時間 -->
+                <div class="form-group">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">休憩時間</label>
+                    <div class="flex items-center space-x-2">
+                        <input type="number" id="breakTime" name="breakTime" min="0" value="60"
+                               class="input-field w-32 text-center" placeholder="休憩時間">
+                        <span class="text-gray-600 font-medium">分</span>
+                        <span class="text-sm text-gray-500 ml-2">(休憩の総時間)</span>
+                    </div>
+                </div>
+
+                <!-- 給与計算単位 -->
+                <div class="form-group">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">給与計算単位</label>
+                    <div class="flex flex-col space-y-3">
+                        <div class="flex items-center space-x-4">
+                            <select id="calculationUnit" name="calculationUnit"
+                                    class="input-field w-40">
+                                <option value="1" selected>1分</option>
+                                <option value="5">5分</option>
+                                <option value="10">10分</option>
+                                <option value="15">15分</option>
+                                <option value="20">20分</option>
+                                <option value="30">30分</option>
+                                <option value="60">60分</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="roundingMode" value="floor" checked
+                                       class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
+                                <span class="text-sm text-gray-700">切り捨て</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="roundingMode" value="ceil"
+                                       class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
+                                <span class="text-sm text-gray-700">切り上げ</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="roundingMode" value="round"
+                                       class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
+                                <span class="text-sm text-gray-700">四捨五入</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 時給 -->
+                <div class="form-group">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">時給</label>
+                    <div class="flex items-center space-x-2">
+                        <input type="number" id="hourlyWage" name="hourlyWage" min="0" value="820"
+                               class="input-field w-40 text-center" placeholder="時給">
+                        <span class="text-gray-600 font-medium">円</span>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex flex-wrap gap-4 pt-4">
+                    <button type="submit"
+                            class="btn-primary flex-1 min-w-[120px]">
+                        計算
+                    </button>
+                    <button type="button" id="clearBtn"
+                            class="btn-secondary flex-1 min-w-[120px]">
+                        クリア
+                    </button>
+                </div>
+            </form>
+
+            <!-- Results Section -->
+            <div id="resultsSection" class="hidden mt-8 pt-8 border-t border-gray-200">
+                <h2 class="text-xl font-bold text-gray-800 mb-6">計算結果</h2>
+                <div class="space-y-4">
+                    <!-- 労働時間 -->
+                    <div class="result-row">
+                        <div class="result-label">労働時間</div>
+                        <div class="result-value" id="workTimeResult">-</div>
+                    </div>
+
+                    <!-- 給与計算時間 -->
+                    <div class="result-row">
+                        <div class="result-label">給与計算時間</div>
+                        <div class="result-value">
+                            <span id="paymentTimeResult">-</span>
+                            <span class="text-sm text-gray-600 ml-2">
+                                = <span id="paymentTimeHoursResult">-</span> 時間
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- 日給 -->
+                    <div class="result-row highlight">
+                        <div class="result-label text-indigo-700 font-bold">日給(参考値)</div>
+                        <div class="result-value text-indigo-700 font-bold text-2xl">
+                            <span id="dailyPayResult">-</span>
+                            <span class="text-lg ml-2">円</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-6 text-gray-600 text-sm">
+            <p>DDD練習用アプリケーション</p>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
 </body>
 </html>
