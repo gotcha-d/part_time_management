@@ -16,7 +16,7 @@ public class DailyPayCalculator {
     WorkRange workRange; // TODO: 本来は勤怠記録とすべき。まずはミニマムに勤務期間から日給を算出する
     HourlyWage hourlyWage;
 
-    DailyPayCalculator(HourlyWage hourlyWage, WorkRange workRange) {
+    public DailyPayCalculator(HourlyWage hourlyWage, WorkRange workRange) {
         this.hourlyWage = hourlyWage;
         this.workRange = workRange;
     }

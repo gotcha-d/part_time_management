@@ -35,45 +35,52 @@ document.addEventListener('DOMContentLoaded', function() {
     /**
      * 勤務時間と給与を計算する
      */
-    function calculatePartTimeWork() {
+    async function calculatePartTimeWork() {
         // 入力値の取得
         const startHour = parseInt(startHourInput.value) || 0;
         const startMinute = parseInt(startMinuteInput.value) || 0;
         const endHour = parseInt(endHourInput.value) || 0;
         const endMinute = parseInt(endMinuteInput.value) || 0;
         const breakTime = parseInt(breakTimeInput.value) || 0;
-        const calculationUnit = parseInt(calculationUnitSelect.value) || 1;
         const hourlyWage = parseInt(hourlyWageInput.value) || 0;
-        const roundingMode = document.querySelector('input[name="roundingMode"]:checked').value;
 
         // バリデーション
         if (!validateInputs(startHour, startMinute, endHour, endMinute, hourlyWage)) {
             return;
         }
 
-        // 開始時刻と終了時刻を分単位に変換
-        const startMinutes = startHour * 60 + startMinute;
-        let endMinutes = endHour * 60 + endMinute;
+        // リクエストボディを作成
+        const requestData = {
+            startHour: startHour,
+            startMinute: startMinute,
+            endHour: endHour,
+            endMinute: endMinute,
+            hourlyWage: hourlyWage
+        };
 
-        // 終了時刻が開始時刻より早い場合、翌日とみなす
-        if (endMinutes < startMinutes) {
-            endMinutes += 24 * 60; // 24時間分の分数を追加
+        try {
+            // バックエンドAPIを呼び出し
+            const response = await fetch('/api/calculate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData)
+            });
+
+            if (!response.ok) {
+                throw new Error('計算に失敗しました。');
+            }
+
+            const result = await response.json();
+
+            // 結果を表示
+            displayResults(result.workTime, result.amount);
+
+        } catch (error) {
+            alert('計算中にエラーが発生しました: ' + error.message);
+            console.error('Error:', error);
         }
-
-        // 労働時間を計算(分単位)
-        const totalWorkMinutes = endMinutes - startMinutes;
-
-        // 休憩時間を引いた実労働時間
-        const actualWorkMinutes = totalWorkMinutes - breakTime;
-
-        // 給与計算時間を計算(計算単位で丸め)
-        const paymentMinutes = applyRounding(actualWorkMinutes, calculationUnit, roundingMode);
-
-        // 日給を計算
-        const dailyPay = Math.floor((hourlyWage * paymentMinutes) / 60);
-
-        // 結果を表示
-        displayResults(totalWorkMinutes, actualWorkMinutes, paymentMinutes, dailyPay);
     }
 
     /**
@@ -160,13 +167,13 @@ document.addEventListener('DOMContentLoaded', function() {
     /**
      * 結果を表示
      */
-    function displayResults(totalWorkMinutes, actualWorkMinutes, paymentMinutes, dailyPay) {
+    function displayResults(workTimeMinutes, dailyPay) {
         // 労働時間の表示
-        workTimeResult.textContent = formatMinutesToHoursAndMinutes(actualWorkMinutes);
+        workTimeResult.textContent = formatMinutesToHoursAndMinutes(workTimeMinutes);
 
-        // 給与計算時間の表示
-        paymentTimeResult.textContent = formatMinutesToHoursAndMinutes(paymentMinutes);
-        paymentTimeHoursResult.textContent = formatMinutesToDecimalHours(paymentMinutes);
+        // 給与計算時間の表示（今回は労働時間と同じ）
+        paymentTimeResult.textContent = formatMinutesToHoursAndMinutes(workTimeMinutes);
+        paymentTimeHoursResult.textContent = formatMinutesToDecimalHours(workTimeMinutes);
 
         // 日給の表示
         dailyPayResult.textContent = formatNumber(dailyPay);

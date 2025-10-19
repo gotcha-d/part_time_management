@@ -7,7 +7,7 @@ public class WorkRange {
     TimeOfDay from;
     TimeOfDay to;
 
-    WorkRange(TimeOfDay from, TimeOfDay to) {
+    public WorkRange(TimeOfDay from, TimeOfDay to) {
         this.from = from;
         this.to = to;
     }

@@ -7,7 +7,7 @@ package com.gotcha.part_time_management.domain.type;
 public class Minute {
     int value;
 
-    Minute(int value) {
+    public Minute(int value) {
         // TODO: バリデーション
         this.value = value;
     }

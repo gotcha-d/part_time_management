@@ -7,7 +7,7 @@ public class HourlyWage {
 
     Amount amount;
 
-    HourlyWage(Amount amount) {
+    public HourlyWage(Amount amount) {
         this.amount = amount;
     }
 

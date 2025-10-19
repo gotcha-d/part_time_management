@@ -7,7 +7,7 @@ public class TimeOfDay {
     Hour hour;
     Minute minute;
 
-    TimeOfDay(Hour hour, Minute minute) {
+    public TimeOfDay(Hour hour, Minute minute) {
         this.hour = hour;
         this.minute = minute;
     }

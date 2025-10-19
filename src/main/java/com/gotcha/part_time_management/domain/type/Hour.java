@@ -12,7 +12,7 @@ public class Hour {
 
     private final int value;
 
-    Hour(int value) {
+    public Hour(int value) {
         if (!validate(value)) {
             throw new IllegalArgumentException("時刻_時間の値が不正です。");
         }
