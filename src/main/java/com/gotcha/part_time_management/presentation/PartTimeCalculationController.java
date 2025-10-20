@@ -13,13 +13,15 @@ public class PartTimeCalculationController {
     @PostMapping("/calculate")
     public Result calculate(@RequestBody RequestAttendanceForm form) {
         // フォームから値オブジェクトを生成
-        Hour startHour = new Hour(form.getStartHour());
-        Minute startMinute = new Minute(form.getStartMinute());
-        TimeOfDay startTime = new TimeOfDay(startHour, startMinute);
-
-        Hour endHour = new Hour(form.getEndHour());
-        Minute endMinute = new Minute(form.getEndMinute());
-        TimeOfDay endTime = new TimeOfDay(endHour, endMinute);
+        // TODO: プレゼンテーション層がドメイン知識を持っているという課題あり。ドメイン層に閉じこめること
+        TimeOfDay startTime = TimeOfDay.of(
+                form.getStartHour(),
+                form.getStartMinute()
+        );
+        TimeOfDay endTime = TimeOfDay.of(
+                form.getEndHour(),
+                form.getEndMinute()
+        );
 
         // 勤務時間範囲を作成
         WorkRange workRange = new WorkRange(startTime, endTime);

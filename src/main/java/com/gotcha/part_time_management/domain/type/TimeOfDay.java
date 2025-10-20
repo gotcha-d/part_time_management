@@ -7,9 +7,13 @@ public class TimeOfDay {
     Hour hour;
     Minute minute;
 
-    public TimeOfDay(Hour hour, Minute minute) {
+    TimeOfDay(Hour hour, Minute minute) {
         this.hour = hour;
         this.minute = minute;
+    }
+
+    public static TimeOfDay of(int hour, int minute) {
+        return new TimeOfDay(new Hour(hour), new Minute(minute));
     }
 
     @Override

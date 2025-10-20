@@ -10,7 +10,7 @@ public class HourTime {
 
     LocalTime value;
 
-    public HourTime(int hour, int minutes) {
+    HourTime(int hour, int minutes) {
         // ofメソッドは、「既存の値や素になるデータを受け取り、新たなオブジェクトを生成するファクト的メソッド」を意図する
         value = LocalTime.of(hour, minutes);
     }
